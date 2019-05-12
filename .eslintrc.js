@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es6: true
   },
-  extends: "eslint:recommended",
+  extends: ["plugin:react/recommended", "eslint:recommended"],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly"
@@ -21,6 +21,8 @@ module.exports = {
     indent: ["error", 2],
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double"],
-    semi: ["error", "always"]
+    semi: ["error", "always"],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error"
   }
 };
