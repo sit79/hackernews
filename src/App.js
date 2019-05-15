@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import "./App.css";
+import React, { Component } from "react"
+import "./App.css"
 
 const list = [
   {
@@ -18,26 +18,26 @@ const list = [
     points: 5,
     objectID: 1
   }
-];
+]
 
 const isSearched = searchTerm => item =>
-  item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  item.title.toLowerCase().includes(searchTerm.toLowerCase())
 
 class Search extends Component {
   render() {
-    const { value, onChange, children } = this.props;
+    const { value, onChange, children } = this.props
     return (
       <form>
         {children}
         <input type="text" value={value} onChange={onChange} />
       </form>
-    );
+    )
   }
 }
 
 class Table extends Component {
   render() {
-    const { list, pattern, onDismiss } = this.props;
+    const { list, pattern, onDismiss } = this.props
     return (
       <div>
         {list.filter(isSearched(pattern)).map(item => (
@@ -54,44 +54,44 @@ class Table extends Component {
           </div>
         ))}
       </div>
-    );
+    )
   }
 }
 
 class Button extends Component {
   render() {
-    const { onClick, className, children } = this.props;
+    const { onClick, className = "", children } = this.props
 
     return (
       <button onClick={onClick} className={className} type="button">
         {children}
       </button>
-    );
+    )
   }
 }
 
 class App extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       list,
       searchTerm: ""
-    };
+    }
   }
 
   onDismiss = id => {
-    const isNotId = item => item.objectID !== id;
-    const updatedList = this.state.list.filter(isNotId);
-    this.setState({ list: updatedList });
-  };
+    const isNotId = item => item.objectID !== id
+    const updatedList = this.state.list.filter(isNotId)
+    this.setState({ list: updatedList })
+  }
 
   onSearchChange = event => {
-    this.setState({ searchTerm: event.target.value });
-  };
+    this.setState({ searchTerm: event.target.value })
+  }
 
   render() {
-    const { searchTerm, list } = this.state;
+    const { searchTerm, list } = this.state
     return (
       <div className="App">
         <Search value={searchTerm} onChange={this.onSearchChange}>
@@ -99,8 +99,8 @@ class App extends Component {
         </Search>
         <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
