@@ -32,40 +32,29 @@ const Search = ({ value, onChange, children }) => (
   </form>
 )
 
-class Table extends Component {
-  render() {
-    const { list, pattern, onDismiss } = this.props
-    return (
-      <div>
-        {list.filter(isSearched(pattern)).map(item => (
-          <div key={item.objectID}>
-            <span>
-              <a href={item.url}>{item.title}</a>
-            </span>
-            <span> by {item.author}, </span>
-            <span>{item.num_comments} comments, </span>
-            <span>{item.points} points </span>
-            <span>
-              <Button onClick={() => onDismiss(item.objectID)}>Dismiss</Button>
-            </span>
-          </div>
-        ))}
+const Table = ({ list, pattern, onDismiss }) => (
+  <div>
+    {list.filter(isSearched(pattern)).map(item => (
+      <div key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span> by {item.author}, </span>
+        <span>{item.num_comments} comments, </span>
+        <span>{item.points} points </span>
+        <span>
+          <Button onClick={() => onDismiss(item.objectID)}>Dismiss</Button>
+        </span>
       </div>
-    )
-  }
-}
+    ))}
+  </div>
+)
 
-class Button extends Component {
-  render() {
-    const { onClick, className = "", children } = this.props
-
-    return (
-      <button onClick={onClick} className={className} type="button">
-        {children}
-      </button>
-    )
-  }
-}
+const Button = ({ onClick, className = "", children }) => (
+  <button onClick={onClick} className={className} type="button">
+    {children}
+  </button>
+)
 
 class App extends Component {
   constructor(props) {
