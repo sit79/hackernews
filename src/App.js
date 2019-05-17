@@ -32,23 +32,35 @@ const Search = ({ value, onChange, children }) => (
   </form>
 )
 
-const Table = ({ list, pattern, onDismiss }) => (
-  <div>
-    {list.filter(isSearched(pattern)).map(item => (
-      <div key={item.objectID}>
-        <span>
-          <a href={item.url}>{item.title}</a>
-        </span>
-        <span> by {item.author}, </span>
-        <span>{item.num_comments} comments, </span>
-        <span>{item.points} points </span>
-        <span>
-          <Button onClick={() => onDismiss(item.objectID)}>Dismiss</Button>
-        </span>
-      </div>
-    ))}
-  </div>
-)
+const Table = ({ list, pattern, onDismiss }) => {
+  const column = {
+    large: { width: "40%" },
+    middle: { width: "30%" },
+    small: { width: "10%" }
+  }
+  return (
+    <div className="table">
+      {list.filter(isSearched(pattern)).map(item => (
+        <div key={item.objectID} className="table-row">
+          <span style={column.large}>
+            <a href={item.url}>{item.title}</a>
+          </span>
+          <span style={column.middle}> by {item.author}, </span>
+          <span style={column.small}>{item.num_comments} comments, </span>
+          <span style={column.small}>{item.points} points </span>
+          <span style={column.small}>
+            <Button
+              onClick={() => onDismiss(item.objectID)}
+              className="button-inline"
+            >
+              Dismiss
+            </Button>
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 const Button = ({ onClick, className = "", children }) => (
   <button onClick={onClick} className={className} type="button">
@@ -79,10 +91,12 @@ class App extends Component {
   render() {
     const { searchTerm, list } = this.state
     return (
-      <div className="App">
-        <Search value={searchTerm} onChange={this.onSearchChange}>
-          Search
-        </Search>
+      <div className="page">
+        <div className="interactions">
+          <Search value={searchTerm} onChange={this.onSearchChange}>
+            Search
+          </Search>
+        </div>
         <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
       </div>
     )
