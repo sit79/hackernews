@@ -3,24 +3,11 @@ import "./App.css"
 
 /* eslint react/prop-types: 0 */
 
-const list = [
-  {
-    title: "React",
-    url: "https://reactjs.org/",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0
-  },
-  {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1
-  }
-]
+const DEFAULT_QUERY = "redux"
+
+const PATH_BASE = "https://hn.algolia.com/api/v1"
+const PATH_SEARCH = "/search"
+const PARAM_SEARCH = "query="
 
 const isSearched = searchTerm => item =>
   item.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -73,8 +60,8 @@ class App extends Component {
     super(props)
 
     this.state = {
-      list,
-      searchTerm: ""
+      result: null,
+      searchTerm: DEFAULT_QUERY
     }
   }
 
@@ -88,8 +75,30 @@ class App extends Component {
     this.setState({ searchTerm: event.target.value })
   }
 
+  setSearchTopStories = result => {
+    this.setState({ result })
+  }
+
+  componentDidMount() {
+    const { searchTerm } = this.state
+
+    async function getResults() {
+      const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`
+      let res = await fetch(url)
+      let result = await res.json()
+      return result
+    }
+
+    getResults()
+      .then(res => this.setSearchTopStories(res))
+      .catch(err => err)
+  }
+
   render() {
-    const { searchTerm, list } = this.state
+    const { searchTerm, result } = this.state
+    if (!result) {
+      return null
+    }
     return (
       <div className="page">
         <div className="interactions">
@@ -97,7 +106,11 @@ class App extends Component {
             Search
           </Search>
         </div>
-        <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
+        <Table
+          list={result.hits}
+          pattern={searchTerm}
+          onDismiss={this.onDismiss}
+        />
       </div>
     )
   }
