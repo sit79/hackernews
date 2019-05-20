@@ -23,7 +23,8 @@ module.exports = {
     quotes: ["error", "double"],
     semi: [2, "never"],
     "react/jsx-uses-react": "error",
-    "react/jsx-uses-vars": "error"
+    "react/jsx-uses-vars": "error",
+    "no-console": [1]
   },
   settings: {
     react: {
