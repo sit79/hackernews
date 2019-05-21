@@ -74,7 +74,6 @@ class App extends Component {
 
   onDismiss = id => {
     const isNotId = item => item.objectID !== id
-    // TODO this stuff…
     const updatedHits = this.state.result.hits.filter(isNotId)
     this.setState({
       result: Object.assign({}, this.state.result, { hits: updatedHits })
@@ -88,7 +87,7 @@ class App extends Component {
   setSearchTopStories = result => {
     this.setState({ result })
   }
-
+  
   componentDidMount() {
     const { searchTerm } = this.state
     try {
