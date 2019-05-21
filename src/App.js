@@ -65,10 +65,19 @@ class App extends Component {
     }
   }
 
+  getResults = async searchTerm => {
+    const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`
+    let res = await fetch(url)
+    let result = await res.json()
+    this.setSearchTopStories(result)
+  }
+
   onDismiss = id => {
     const isNotId = item => item.objectID !== id
-    const updatedList = this.state.list.filter(isNotId)
-    this.setState({ list: updatedList })
+    const updatedHits = this.state.result.hits.filter(isNotId)
+    this.setState({
+      result: Object.assign({}, this.state.result, { hits: updatedHits })
+    })
   }
 
   onSearchChange = event => {
@@ -78,20 +87,14 @@ class App extends Component {
   setSearchTopStories = result => {
     this.setState({ result })
   }
-
+  
   componentDidMount() {
     const { searchTerm } = this.state
-
-    async function getResults() {
-      const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`
-      let res = await fetch(url)
-      let result = await res.json()
-      return result
+    try {
+      this.getResults(searchTerm)
+    } catch (error) {
+      console.log(error)
     }
-
-    getResults()
-      .then(res => this.setSearchTopStories(res))
-      .catch(err => err)
   }
 
   render() {
