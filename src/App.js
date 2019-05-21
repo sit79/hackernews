@@ -74,8 +74,11 @@ class App extends Component {
 
   onDismiss = id => {
     const isNotId = item => item.objectID !== id
-    const updatedList = this.state.list.filter(isNotId)
-    this.setState({ list: updatedList })
+    // TODO this stuff…
+    const updatedHits = this.state.result.hits.filter(isNotId)
+    this.setState({
+      result: Object.assign({}, this.state.result, { hits: updatedHits })
+    })
   }
 
   onSearchChange = event => {
@@ -97,7 +100,6 @@ class App extends Component {
 
   render() {
     const { searchTerm, result } = this.state
-    // console.log(result)
     if (!result) {
       return null
     }

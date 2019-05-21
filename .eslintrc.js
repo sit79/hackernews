@@ -24,11 +24,11 @@ module.exports = {
     semi: [2, "never"],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "no-console": [1]
+    "no-console": 1
   },
   settings: {
     react: {
       version: require("./package.json").dependencies.react
     }
   }
-};
+}
