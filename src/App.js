@@ -4,22 +4,22 @@ import "./App.css"
 /* eslint react/prop-types: 0 */
 
 const DEFAULT_QUERY = "redux"
+const DEFAULT_HPP = "100"
 
 const PATH_BASE = "https://hn.algolia.com/api/v1"
 const PATH_SEARCH = "/search"
 const PARAM_SEARCH = "query="
+const PARAM_PAGE = "page="
+const PARAM_HPP = "hitsPerPage="
 
-const isSearched = searchTerm => item =>
-  item.title.toLowerCase().includes(searchTerm.toLowerCase())
-
-const Search = ({ value, onChange, children }) => (
-  <form>
-    {children}
+const Search = ({ value, onChange, onSubmit, children }) => (
+  <form onSubmit={onSubmit}>
     <input type="text" value={value} onChange={onChange} />
+    <button type="submit">{children}</button>
   </form>
 )
 
-const Table = ({ list, pattern, onDismiss }) => {
+const Table = ({ list, onDismiss }) => {
   const column = {
     large: { width: "40%" },
     middle: { width: "30%" },
@@ -27,7 +27,7 @@ const Table = ({ list, pattern, onDismiss }) => {
   }
   return (
     <div className="table">
-      {list.filter(isSearched(pattern)).map(item => (
+      {list.map(item => (
         <div key={item.objectID} className="table-row">
           <span style={column.large}>
             <a href={item.url}>{item.title}</a>
@@ -80,18 +80,40 @@ class App extends Component {
     })
   }
 
+  fetchSearchTopStories = async (searchTerm, page = 0) => {
+    const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
+    try {
+      let res = await fetch(url)
+      let result = await res.json()
+      this.setSearchTopStories(result)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   onSearchChange = event => {
     this.setState({ searchTerm: event.target.value })
   }
 
   setSearchTopStories = result => {
-    this.setState({ result })
+    const { hits, page } = result
+
+    const oldHits = page !== 0 ? this.state.result.hits : []
+    const updatedHits = [...oldHits, ...hits]
+
+    this.setState({ result: { hits: updatedHits, page } })
   }
-  
+
+  onSearchSubmit = event => {
+    const { searchTerm } = this.state
+    this.fetchSearchTopStories(searchTerm)
+    event.preventDefault()
+  }
+
   componentDidMount() {
     const { searchTerm } = this.state
     try {
-      this.getResults(searchTerm)
+      this.fetchSearchTopStories(searchTerm)
     } catch (error) {
       console.log(error)
     }
@@ -99,21 +121,27 @@ class App extends Component {
 
   render() {
     const { searchTerm, result } = this.state
-    if (!result) {
-      return null
-    }
+    const page = (result && result.page) || 0
+
     return (
       <div className="page">
         <div className="interactions">
-          <Search value={searchTerm} onChange={this.onSearchChange}>
+          <Search
+            value={searchTerm}
+            onChange={this.onSearchChange}
+            onSubmit={this.onSearchSubmit}
+          >
             Search
           </Search>
         </div>
-        <Table
-          list={result.hits}
-          pattern={searchTerm}
-          onDismiss={this.onDismiss}
-        />
+        {result && <Table list={result.hits} onDismiss={this.onDismiss} />}
+        <div className="interactions">
+          <Button
+            onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}
+          >
+            More
+          </Button>
+        </div>
       </div>
     )
   }
