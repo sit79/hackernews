@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import axios from "axios"
 import "./App.css"
 
 /* eslint react/prop-types: 0 */
@@ -95,9 +96,8 @@ class App extends Component {
   fetchSearchTopStories = async (searchTerm, page = 0) => {
     const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`
     try {
-      let res = await fetch(url)
-      let result = await res.json()
-      this.setSearchTopStories(result)
+      let result = await axios.get(url)
+      this.setSearchTopStories(result.data)
     } catch (error) {
       this.setState({ error })
     }
