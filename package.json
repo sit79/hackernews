@@ -28,6 +28,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint-plugin-react": "^7.13.0"
+    "eslint-plugin-react": "^7.13.0",
+    "react-test-renderer": "^16.8.6"
   }
 }
